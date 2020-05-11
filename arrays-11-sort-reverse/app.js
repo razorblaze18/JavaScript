@@ -87,49 +87,76 @@
 
 // console.log(taxAdjustedPrices);
 
-const prices = [10.99, 5.99, 3.99, 6.59];
-const tax = 0.19;
+// const prices = [10.99, 5.99, 3.99, 6.59];
+// const tax = 0.19;
 
-const taxAdjustedPrices = prices.map((price, idx, prices) => {
-  const priceObj = { index: idx, taxAdjPrice: price * (1 + tax) };
-  return priceObj;
-});
-
-// console.log(prices, taxAdjustedPrices);
-
-const sortedPrices = prices.sort((a, b) => {
-  if (a > b) {
-    return -1;
-  } else if (a === b) {
-    return 0;
-  } else {
-    return 1;
-  }
-});
-// console.log(sortedPrices.reverse());
-console.log(sortedPrices);
-
-const filteredArray = prices.filter(price => price > 6);
-
-console.log(filteredArray);
-
-// let sum = 0;
-
-// prices.forEach((price) => {
-//   sum += price
+// const taxAdjustedPrices = prices.map((price, idx, prices) => {
+//   const priceObj = { index: idx, taxAdjPrice: price * (1 + tax) };
+//   return priceObj;
 // });
+
+// // console.log(prices, taxAdjustedPrices);
+
+// const sortedPrices = prices.sort((a, b) => {
+//   if (a > b) {
+//     return -1;
+//   } else if (a === b) {
+//     return 0;
+//   } else {
+//     return 1;
+//   }
+// });
+// // console.log(sortedPrices.reverse());
+// console.log(sortedPrices);
+
+// const filteredArray = prices.filter(price => price > 6);
+
+// console.log(filteredArray);
+
+// // let sum = 0;
+
+// // prices.forEach((price) => {
+// //   sum += price
+// // });
+// // console.log(sum);
+
+// const sum = prices.reduce((prevValue, curValue) => prevValue + curValue, 0);
 // console.log(sum);
 
-const sum = prices.reduce((prevValue, curValue) => prevValue + curValue, 0);
-console.log(sum);
+// const data = 'New York;10.99;2020';
 
-const data = 'New York;10.99;2020';
+// const transformedData = data.split(';');
+// transformedData[1] = +transformedData[1];
+// console.log(transformedData);
 
-const transformedData = data.split(';');
-transformedData[1] = +transformedData[1];
-console.log(transformedData);
+// const nameFragments = ['Aman', 'Dhangar'];
+// const name = nameFragments.join(' ');
+// console.log(name);
 
-const nameFragments = ['Aman', 'Dhangar'];
-const name = nameFragments.join(' ');
-console.log(name);
+// //SPREAD OPERATOR: It is an operator that in the end pulls out all elements of an array and gives them to you as a standalone list of elements.
 
+// const copiedNameFragments = [...nameFragments];
+// nameFragments.push('Mr');
+// console.log(nameFragments, copiedNameFragments);
+
+// console.log(Math.min(...prices));//It doesn't take array, it takes arguements.
+
+// const persons = [{name: 'Aman', age: 20}, {name:"Mudit", age:22}];
+// const copiedPersons = [
+//   ...persons.map (person => ({
+//     name: person.name,
+//     age: person.age
+//   }))];
+
+// persons.push({name: 'Anna', age: 23});
+// persons[0].age = 31;
+
+// console.log(persons, copiedPersons);
+
+const nameData = ['Aman', 'Dhangar', 'Mr', 30];
+// const firstName = nameData[0];
+// const lastName = nameData[1];
+
+const [firstName, lastName, ...otherInformation] = nameData;
+//Above, REST Operator is called because it will collect all remaining elements of that array which are not assigned to variables and store them in one brand new variable.
+console.log(firstName, lastName, otherInformation);
