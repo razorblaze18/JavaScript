@@ -33,7 +33,7 @@ const searchBtn = document.getElementById('search-btn');
 
 const movies = [];
 
-const renderMovies = () => {
+const renderMovies = (filter = '') => {//by adding an argument 'filter' and assigning a default value, let say an empty string. That measn that by default, this will be an empty string if we don't pass any more specific value.
     const movieList = document.getElementById('movie-list');
 
     if(movies.length === 0){
@@ -44,7 +44,11 @@ const renderMovies = () => {
     }
     movieList.innerHTML = '';
 
-    movies.forEach((movie) => {
+    const filteredMovies = !filter 
+    ? movies
+    : movies.filter(movie => movie.info.title.includes(filter));
+
+    filteredMovies.forEach((movie) => {
         const movieEl = document.createElement('li');
         let text = movie.info.title + ' - ';
         for(const key in movie.info) {
@@ -81,4 +85,10 @@ const addMovieHandler = () => {
     renderMovies();
 };
 
+const searchMovieHandler = () => {
+    const filterTerm = document.getElementById('filter-title').value;
+    renderMovies(filterTerm);
+};
+
 addMovieBtn.addEventListener('click', addMovieHandler);
+searchBtn.addEventListener('click', searchMovieHandler);
