@@ -27,7 +27,7 @@
 // console.log(person);
 
 // //Arrays are object with numbers keys where the order should be guranteed (ascending)!.
-
+"use strict";
 const addMovieBtn = document.getElementById('add-movie-btn');
 const searchBtn = document.getElementById('search-btn');
 
@@ -50,10 +50,18 @@ const renderMovies = (filter = '') => {//by adding an argument 'filter' and assi
 
     filteredMovies.forEach((movie) => {
         const movieEl = document.createElement('li');
-        let text = movie.info.title + ' - ';
-        for(const key in movie.info) {
-            if(key !== 'title'){
-                text = text + `${key}: ${movie.info[key]}`;
+        // if(!('info' in movie)){//To check whether we that info property in our object or not, with the help of 'in' operator.
+
+        // }
+        const {info, ...otherProps} = movie; //Object Destructing.Point at the object you want to where you want to pull something. In this case, Movie. Now between the curly bracket enter the key name which exist in that object on the right, for ex- 'info'.
+        console.log(otherProps);//otherProps, it consist of REST parameter ('...'). And this will now collect all properties which you didn't pull out by name and give you the new object with all these collected remaining properties.
+        // const {title:movieTitle } = info;
+        let {getFormattedTitle} = movie;
+        getFormattedTitle = getFormattedTitle.bind();
+        let text = getFormattedTitle() + ' - ';
+        for(const key in info) {
+            if(key !== 'title'){ // keys are string that why we have to write 'title' rather than just writing title.
+                text = text + `${key}: ${info[key]}`;
             }
         }
         movieEl.textContent = text;
@@ -77,9 +85,15 @@ const addMovieHandler = () => {
     const newMovie = {
         info: {
         title, //If Key name and Value name are same then you can use that. If you hardcoded the value name then you can't use this.
-        [extraName]: extraValue
+        [extraName]: extraValue// [], used here to assign a dynamic property name.
         },
-        id: Math.random()
+        id: Math.random().toString(),
+        getFormattedTitle() {
+            console.log(this);
+            return this.info.title.toUpperCase();
+        }
+        //Whenever dealing with 'this' keyword. Never use arrow function.
+        //This keyword, inside of a function, no matter if that function is part of an object or not, the 'this' keyword will refer to whatever called the function, whatever was responsible for executing that function.
     };
     movies.push(newMovie);
     renderMovies();
@@ -90,5 +104,7 @@ const searchMovieHandler = () => {
     renderMovies(filterTerm);
 };
 
-addMovieBtn.addEventListener('click', addMovieHandler);
+addMovieBtn.addEventListener('click', addMovieHandler.bind());
 searchBtn.addEventListener('click', searchMovieHandler);
+
+//Spread Operator in combination with objects
