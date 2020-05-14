@@ -57,8 +57,9 @@ const renderMovies = (filter = '') => {//by adding an argument 'filter' and assi
         console.log(otherProps);//otherProps, it consist of REST parameter ('...'). And this will now collect all properties which you didn't pull out by name and give you the new object with all these collected remaining properties.
         // const {title:movieTitle } = info;
         let {getFormattedTitle} = movie;
-        getFormattedTitle = getFormattedTitle.bind();
-        let text = getFormattedTitle() + ' - ';
+        // getFormattedTitle = getFormattedTitle.bind(movie);// Bind prepares the function for future execution, it returns a new function object in the end which we then store here in getFormattedTitle.
+        // let text = getFormattedTitle.call(movie) + ' - ';// Call executes the function right away and it can take infinite amount of additional arguement
+        let text = getFormattedTitle.apply(movie) + ' - ';// Apply also works like 'call', it also executes the function right away. But, it can take only one additional arguement and that however has to be an ARRAY.
         for(const key in info) {
             if(key !== 'title'){ // keys are string that why we have to write 'title' rather than just writing title.
                 text = text + `${key}: ${info[key]}`;
@@ -88,12 +89,10 @@ const addMovieHandler = () => {
         [extraName]: extraValue// [], used here to assign a dynamic property name.
         },
         id: Math.random().toString(),
-        getFormattedTitle() {
+        getFormattedTitle() {//Whenever dealing with 'this' keyword. Never use arrow function. Because 'arrow' function, they don't know "this".Every function has its own "this" binding. And, using "this" it will refer to the global window.So using "this" and the arrow function and using this outside the arrow function won't make any change. 
             console.log(this);
-            return this.info.title.toUpperCase();
+            return this.info.title.toUpperCase(); //This keyword, inside of a function, no matter if that function is part of an object or not, the 'this' keyword will refer to whatever called the function, whatever was responsible for executing that function.
         }
-        //Whenever dealing with 'this' keyword. Never use arrow function.
-        //This keyword, inside of a function, no matter if that function is part of an object or not, the 'this' keyword will refer to whatever called the function, whatever was responsible for executing that function.
     };
     movies.push(newMovie);
     renderMovies();
