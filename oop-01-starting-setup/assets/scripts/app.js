@@ -12,25 +12,30 @@ class Product {
     }
 
 
-}class ElementAttribute{
-    constructor(attrName, attrValue){
+} class ElementAttribute {
+    constructor(attrName, attrValue) {
         this.name = attrName;
         this.value = attrValue;
     }
 }
 
 class Component {
-    constructor(renderHookId){
+    constructor(renderHookId, shouldRender = true) {
         this.hookId = renderHookId;
+        if (shouldRender){
+            this.render();
+        };
     }
 
-    createRootElement(tag, cssClasses, attributes){
+    render() {}
+
+    createRootElement(tag, cssClasses, attributes) {
         const rootElement = document.createElement(tag);
-        if(cssClasses){
+        if (cssClasses) {
             rootElement.className = cssClasses;
         }
-        if(attributes && attributes.length > 0){
-            for (const attr of attributes){
+        if (attributes && attributes.length > 0) {
+            for (const attr of attributes) {
                 rootElement.setAttribute(attr.name, attr.value);
             }
         }
@@ -48,7 +53,7 @@ class ShoppingCart extends Component {
     }
 
     get totalAmount() {
-        const sum = this.items.reduce((prevValue, curItem) =>  prevValue + curItem.price, 0
+        const sum = this.items.reduce((prevValue, curItem) => prevValue + curItem.price, 0
         );//Reduce always takes two arguements. IF the array is empty it will automatically return the inital value which is zero.
         return sum;
     }
@@ -57,10 +62,15 @@ class ShoppingCart extends Component {
         super(renderHookId)
     }
 
-    addProduct(products){
+    addProduct(products) {
         const updatedItems = [...this.items];
         updatedItems.push(products);
         this.cartItems = updatedItems;
+    }
+
+    orderProducts() {
+        console.log('Ordering...');
+        console.log(this.items);
     }
 
     render() {
@@ -69,13 +79,17 @@ class ShoppingCart extends Component {
         <h2>Total: \$${0}</h2>
         <button>Order Now!</button>
         `;
+        const orderButton = cartEl.querySelector('button');
+        orderButton.addEventListener('click', () => this.orderProducts());//Since arrow functions don't know this, will not be bound what the event listener wants to bind it because arrow function ignores this.
         this.totalOutput = cartEl.querySelector('h2');
     }
 }
 
 class ProductItem extends Component {
-    constructor(products) {
+    constructor(products, renderHookId) {
+        super(renderHookId, false);
         this.products = products;
+        this.render();
     }
 
     addToCart() {
@@ -83,7 +97,7 @@ class ProductItem extends Component {
     }
 
     render() {
-        const prodEl = this.createRootElement('li', 'product-items')
+        const prodEl = this.createRootElement('li', 'product-item');
         prodEl.innerHTML = `
         <div>
             <img src ="${this.products.imageUrl}" alt="${this.products.title}">
@@ -100,60 +114,69 @@ class ProductItem extends Component {
     }
 }
 
-class ProductList {
-    products = [
-        new Product(
-            'A Pillow',
-            'https://www.fairfieldstore.com/images/products/lrg/fairfield-store-ffi-108-s-down-alternative-eco-pillow_lrg.jpg',
-            'A soft Pillow!',
-            19.99
-        ),
+class ProductList extends Component {
+    products = [];
 
-        new Product(
-            'A Carpet',
-            'https://assets.jassets.com/dpr_2/f_auto/fl_progressive/h_403,q_70,w_295/v1/assets/images/7721426/2018/11/1/d181034f-47b9-427f-98bf-875205ea8e3c1541052991414-IMPERIAL-KNOTS-CHARCOAL-TEAL-PERSIAN-HAND-TUFTED-CARPET-9651-1.jpg',
-            'A carpet which you might like.',
-            23.99
-        )
+    constructor(renderHookId) {//This is known as Method.
+        super(renderHookId);
+        this.fetchProducts();
+    }
 
-    ];
+    fetchProducts() {
+        this.products = [
+            new Product(
+                'A Pillow',
+                'https://www.fairfieldstore.com/images/products/lrg/fairfield-store-ffi-108-s-down-alternative-eco-pillow_lrg.jpg',
+                'A soft Pillow!',
+                19.99
+            ),
+    
+            new Product(
+                'A Carpet',
+                'https://assets.jassets.com/dpr_2/f_auto/fl_progressive/h_403,q_70,w_295/v1/assets/images/7721426/2018/11/1/d181034f-47b9-427f-98bf-875205ea8e3c1541052991414-IMPERIAL-KNOTS-CHARCOAL-TEAL-PERSIAN-HAND-TUFTED-CARPET-9651-1.jpg',
+                'A carpet which you might like.',
+                23.99
+            )
+        ];
+        this.renderProducts();
+    } 
 
-    constructor() { }//This is known as Method.
+    renderProducts() {
+        for (const prod of this.products) {
+            new ProductItem(prod, 'prod-list');
+        }
+    }
 
     render() {
-        
-        const prodList = document.createElement('ul');
-        prodList.className = 'product-list';
-        for (const prod of this.products) {
-            const productItem = new ProductItem(prod);
-            const prodEl = productItem.render();
-            prodList.append(prodEl);
-        }
-        return prodList;
+
+        this.createRootElement('ul', 'product-list',
+         [new ElementAttribute('id', 'prod-list')
+        ]);
+         if (this.products && this.products.length > 0) {
+             this.renderProducts();
+         }
+       
     }
 }
 
 class Shop {
+    constructor() {
+        this.render();
+    }
+
     render() {
-        const renderHook = document.getElementById('app');
-
         this.cart = new ShoppingCart('app');
-        this.cart.render();
-        const productList = new ProductList();
-        const prodListEl = productList.render();
-
-        renderHook.append(prodListEl);
+        new ProductList('app');
     }
 }
 
-class App{
+class App {
     static init() {
         const shop = new Shop();
-        shop.render();
         this.cart = shop.cart;
     }
 
-    static addProductToCart(products){
+    static addProductToCart(products) {
         this.cart.addProduct(products);
     }
 }
