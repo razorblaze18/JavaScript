@@ -62,6 +62,17 @@ header p{
     background: #3ea3d1;
 }
 
+.visual > div {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    bottom: 0%;
+    left: 20%;
+    bottom: 0%;
+    z-index: -1;
+}
+
 @keyframes jump{
     0%{
         bottom: 0%;
@@ -79,7 +90,7 @@ header p{
 }
 
 .visual > div {
-    position: adsolute;
+    position: absolute;
     height: 50px;
     width: 50px;
     border-radius: 50%;
