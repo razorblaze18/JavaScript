@@ -23,8 +23,9 @@ class ProjectItem{
     connectSwitchButton(){
         const projectItemElement = document.getElementById(this.id);
         const switchBtn = projectItemElement.querySelector('button:last-of-type');
+        switch
         switchBtn.addEventListener('click',
-         this.updateProjectListsHandler.bind(null,this.id)
+         this.updateProjectListsHandler.bind(null, this.id)
          );
     }
 }
