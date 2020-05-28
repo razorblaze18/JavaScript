@@ -168,7 +168,11 @@ class App {
             activeProjectList.addProject.bind(activeProjectList)
         );
 
-        document.getElementById('start-analytics-btn').addEventListener('click', this.startAnalytics);
+        // document.getElementById('start-analytics-btn').addEventListener('click', this.startAnalytics);
+        const timerId = setTimeout(this.startAnalytics, 3000);//Here 3000 means 3000ms which is 3 seconds.
+        document.getElementById('stop-analytics-btn').addEventListener('click',() => {
+            clearTimeout(timerId);//To stop the timer.
+        });
     }
 
     static startAnalytics() {
