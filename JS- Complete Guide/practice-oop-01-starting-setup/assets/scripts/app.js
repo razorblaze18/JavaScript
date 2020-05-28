@@ -1,5 +1,5 @@
 class DOMHelper {
-    static clearEventListeners(element){
+    static clearEventListeners(element) {
         const clonedElement = element.cloneNode(true);//To make a deep clone!
         element.replaceWith(clonedElement);
         return clonedElement;
@@ -9,37 +9,39 @@ class DOMHelper {
         const element = document.getElementById(elementId);
         const destinationElement = document.querySelector(newDestinationSelector);
         destinationElement.append(element);//If you're doing this to a DOM node that is already part of the DOM and you're appending it again in another place of the DOM, then it will not be copied, it will be moved.
+        //element.scrollIntoView();//By using this, it gets scrolled into view automatically where it gets updated i.e., it directly jumps to that update without any animation.
+        element.scrollIntoView({ behavior: 'smooth' });//It does the same things like the upper line does, but with a tiny animation.
     }
 }
 
 class Component {
-    constructor(hostElementId, insertBefore = false){
-        if(hostElementId){
+    constructor(hostElementId, insertBefore = false) {
+        if (hostElementId) {
             this.hostElement = document.getElementById(hostElementId);
-        }else{
+        } else {
             this.hostElement = document.body;
         }
         this.insertBefore = insertBefore;
     }
 
-    detach(){
-        if(this.element){
+    detach() {
+        if (this.element) {
             this.element.remove();
         }
         this.element.remove();
         // this.element.parentElement.removeChild(this.element);//This method can be used in older browsers.
     }
-    attach(){
+    attach() {
         this.hostElement.insertAdjacentElement(
-            this.insertBefore? 'afterbegin' : 'beforeend',
+            this.insertBefore ? 'afterbegin' : 'beforeend',
             this.element
-            );
+        );
     }
 }
 
-class Tooltip extends Component{ 
-    constructor(closeNotifierFunction,text){
-        super();// To call the base class and its own constructor.
+class Tooltip extends Component {
+    constructor(closeNotifierFunction, text, hostElementId) {
+        super(hostElementId);// To call the base class and its own constructor.
         this.closeNotifier = closeNotifierFunction;
         this.text = text;
         this.create();
@@ -50,11 +52,27 @@ class Tooltip extends Component{
         this.closeNotifier();
     }
 
-    create(){
+    create() {
         const tooltipElement = document.createElement('div');
         tooltipElement.className = 'card';
-        tooltipElement.textContent = this.text;
-        tooltipElement.addEventListener('click',this.closeTooltip);
+        const tooltipTemplate = document.getElementById('tooltip');
+        const tooltipBody = document.importNode(tooltipTemplate.content, true);//This gives the content of the Template tag
+        tooltipBody.querySelector('p').textContent = this.text;//Adjust the paragraph in there and insert out text and we can do that with tooltip body
+        tooltipElement.append(tooltipBody);
+
+        const hostElPosLeft = this.hostElement.offsetLeft;
+        const hostElPosTop = this.hostElement.offsetTop;
+        const hostElHeight = this.hostElement.clientHeight;
+        const parentElementScrolling = this.hostElement.parentElement.scrollTop;
+
+        const x = hostElPosLeft + 20;
+        const y = hostElPosTop + hostElHeight - parentElementScrolling - 10;
+
+        tooltipElement.style.position = 'absolute';
+        tooltipElement.style.left = x + 'px';
+        tooltipElement.style.top = y + 'px';
+
+        tooltipElement.addEventListener('click', this.closeTooltip);
         this.element = tooltipElement;
     }
 }
@@ -70,15 +88,17 @@ class ProjectItem {
     }
 
     showMoreInfoHandler() {
-        if(this.hasActiveToolTip){
+        if (this.hasActiveToolTip) {
             return;
         }
         const projectElement = document.getElementById(this.id);
         const tooltipText = projectElement.dataset.extraInfo;//To read data-extra-info properties. These data attributes are all merged in dataset property.
-        
+
         const toolTip = new Tooltip(() => {
             this.hasActiveToolTip = false;
-        }, tooltipText);
+        }, tooltipText,
+            this.id
+        );
         toolTip.attach();
         this.hasActiveToolTip = true;
     }
@@ -147,6 +167,15 @@ class App {
         finishedProjectList.setSwitchHandlerFunction(
             activeProjectList.addProject.bind(activeProjectList)
         );
+
+        document.getElementById('start-analytics-btn').addEventListener('click', this.startAnalytics);
+    }
+
+    static startAnalytics() {
+        const analyticsScript = document.createElement('script');
+        analyticsScript.src = 'assets/scripts/analytics.js';
+        analyticsScript.defer = true;//So that it is only loaded after all the HTML parsing has been done.
+        document.head.append(analyticsScript);
     }
 }
 
