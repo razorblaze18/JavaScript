@@ -1,7 +1,7 @@
 const button = document.querySelector('button');
 
 // button.onClick = function () {
-    
+
 // };
 
 const buttonClickHandler = event => {
@@ -40,7 +40,7 @@ form.addEventListener('submit', () => {
 
 const div = document.querySelector('div');
 
-div.addEventListener('click', event => {
+div.addEventListener('submit', event => {
     console.log('Clicked Div');
     console.log(event);
 });// By default it's false, By adding a second arguemet and setting it to 'true', this Div event listener will run first!
@@ -61,6 +61,10 @@ const list = document.querySelector('ul');
 //         })
 // });
 //<----------ALTERNATIVE METHOD, more efficient(DELEGATE APPROACH)-------->
- list.addEventListener('click', event => {
-                event.target.classList.toggle('highlight');
-            });
+list.addEventListener('click', event => {
+    // console.log(event.currentTarget);//This is different from event.target, currentTarget unlike target is not the actual element on which you clicked but the element on which you click added to the listener.So currentTarget always refer to the list elements.
+    // event.target.classList.toggle('highlight'); 
+    event.target.closest('li').classList.toggle('highlight');//It always gives the closest list item
+    form.submit();
+});
+//DELEGATE APPROACH DOESN'T WORK IN COMPLEX ELEMENTS.
