@@ -12,7 +12,8 @@ function productDescription(string, productName, productPrice){
     if (productPrice > 20){
         priceCategory = 'fairly priced';
     }
-    return `${string[0]}${productName}${string[1]}${priceCategory}${string[2]}`;
+    // return `${string[0]}${productName}${string[1]}${priceCategory}${string[2]}`;
+    return {name: productName, price: productPrice};
 }
 const prodName = 'JavaScript Course';
 const prodPrice = 29.99;
