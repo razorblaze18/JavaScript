@@ -5,34 +5,38 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons: [
-      { name: 'Max', age: 28 },
-      { name: 'Manu', age: 29 },
-      { name: 'Stephanie', age: 26 }
+      {id: 'qwer', name: 'Max', age: 28 },
+      {id: 'tvyb', name: 'Manu', age: 29 },
+      {id: 'cvbn' ,name: 'Stephanie', age: 26 }
     ],
     otherState: 'some other value',
     showPersons: false
   };
 
-  switchNameHandler = (newName) => {
-    // console.log('Was clicked!');
-    // DON'T DO THIS: this.state.persons[0].name = 'Maximilian';
-    this.setState({
-      persons: [
-        { name: newName, age: 28 },
-        { name: 'Manu', age: 29 },
-        { name: 'Stephanie', age: 27 }
-      ]
-    });
-  };
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    });//findIndex takes a function as an input just like .map
 
-  nameChangedHandler = (event) => {
-    this.setState({
-      persons: [
-        { name: 'Aman', age: 28 },
-        { name: event.target.value, age: 29 },
-        { name: 'Ojaswita', age: 17 }
-      ]
-    });
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    //const person = Object.assign({}, this.state.persons[personIndex]);
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({persons: persons});
+  }
+
+  deletePersonHandler = (personIndex) => {
+    //const persons = this.state.persons.slice();//Fetching the persons data. We have used slice here to make a copy of each element
+    const persons = [...this.state.persons]//Using the SPREAD Operator.
+    persons.splice(personIndex, 1);//Splice: it removes one element from the array
+    this.setState({persons: persons});
   }
 
   togglePersonsHandler = () => {
@@ -55,20 +59,15 @@ class App extends Component {
     if (this.state.showPersons) {
       persons = (
         <div>
-          <Person
-            name={this.state.persons[0].name}
-            age={this.state.persons[0].age}
-          />
-          <Person
-            name={this.state.persons[1].name}
-            age={this.state.persons[1].age}
-            click={this.switchNameHandler.bind(this, 'Aman')}
-            changed={this.nameChangedHandler}>My Hobbies: Racing</Person>
-          <Person
-            name={this.state.persons[2].name}
-            age={this.state.persons[2].age}
-          />
-        </div>
+          {this.state.persons.map((person, index) => {
+            return <Person
+              click={() => this.deletePersonHandler(index)}//We have used arrow function here, the alternative would be ".bind(this, index);"
+              name={person.name}
+              age={person.age} 
+              key={person.id} 
+              changes={(event) => this.nameChangedHandler(event, person.id)}/>
+          })}
+        </div>//to render something in our JSX code. ".map()" function is used to convert into arrays.
       );
     }
 
