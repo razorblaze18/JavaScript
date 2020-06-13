@@ -5,9 +5,9 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons: [
-      {id: 'qwer', name: 'Max', age: 28 },
-      {id: 'tvyb', name: 'Manu', age: 29 },
-      {id: 'cvbn' ,name: 'Stephanie', age: 26 }
+      { id: 'qwer', name: 'Max', age: 28 },
+      { id: 'tvyb', name: 'Manu', age: 29 },
+      { id: 'cvbn', name: 'Stephanie', age: 26 }
     ],
     otherState: 'some other value',
     showPersons: false
@@ -17,7 +17,7 @@ class App extends Component {
     const personIndex = this.state.persons.findIndex(p => {
       return p.id === id;
     });//findIndex takes a function as an input just like .map
-
+ 
     const person = {
       ...this.state.persons[personIndex]
     };
@@ -65,7 +65,7 @@ class App extends Component {
               name={person.name}
               age={person.age} 
               key={person.id} 
-              changes={(event) => this.nameChangedHandler(event, person.id)}/>
+              changed={(event) => this.nameChangedHandler(event, person.id)}/>
           })}
         </div>//to render something in our JSX code. ".map()" function is used to convert into arrays.
       );
