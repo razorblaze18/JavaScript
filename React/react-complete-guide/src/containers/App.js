@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import styled from 'styled-components';
-import './App.css';
-import Person from './Person/Person';
+import classes from './App.css';
+import Person from '../components/Persons/Person/Person';
 
 // const StyledButton = styled.button`
 // background-color: ${props => props.alt ? 'red' : 'green'};
@@ -61,8 +61,8 @@ class App extends Component {
   }
 
   render() {
-
     let persons = null;
+    let btnClasses = '';
 
     if (this.state.showPersons) {
       persons = (
@@ -78,6 +78,8 @@ class App extends Component {
         </div>//to render something in our JSX code. ".map()" function is used to convert into arrays.
       );
 
+      btnClasses = classes.Red;
+
       // style.backgroundColor = 'red';
       // style[':hover'] = {
       //   backgroundColor: 'salmon',//light red dosen't exist.
@@ -85,19 +87,19 @@ class App extends Component {
       // };
     }
 
-    const classes = [];
+    const assignedClasses = [];
     if (this.state.persons.length <= 2){
-      classes.push('red');// classes = ['red'];
+      assignedClasses.push(classes.red);// classes = ['red'];
     }
     if (this.state.persons.length <= 1){
-      classes.push('bold');// classes = ['red', 'bold']
+      assignedClasses.push(classes.bold);// classes = ['red', 'bold']
     }
 
     return (
-      <div className="App">
+      <div className={classes.App}>
         <h1>Hi, I'm a React App</h1>
-        <p className={classes.join(' ')}>This is really working!</p>
-        <button className="button" onClick={this.togglePersonsHandler}>Toggle Persons
+        <p className={assignedClasses.join(' ')}>This is really working!</p>
+        <button className={btnClasses} onClick={this.togglePersonsHandler}>Toggle Persons
           </button>
         {persons}
       </div>
